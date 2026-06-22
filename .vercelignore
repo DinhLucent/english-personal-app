@@ -1,0 +1,5 @@
+artifacts
+.next-dev.log
+docs
+.env
+.env.*
