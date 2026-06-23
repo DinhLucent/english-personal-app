@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
-import { CheckCircle2, KeyRound, LogOut, Rocket, UserRound } from "lucide-react";
-import { appConfig, hasAiConfig, hasSupabaseConfig } from "@/lib/config";
+import { CheckCircle2, KeyRound, Rocket, UserRound } from "lucide-react";
+import { appConfig, hasAiConfig, hasSupabaseAppConfig } from "@/lib/config";
 import { AppNav, MobileNav } from "@/components/app-nav";
 import { cn } from "@/components/ui";
 import { getCurrentUser } from "@/lib/supabase/server";
@@ -42,27 +42,19 @@ function UserPanel({
         </div>
         <div className="min-w-0">
           <p className="truncate text-sm font-semibold">
-            {email ?? (supabaseReady ? "Not signed in" : "Local preview")}
+            {email ?? (supabaseReady ? "Personal workspace" : "Local preview")}
           </p>
           <p className="text-xs text-[#66716c]">
-            {email ? "Supabase session active" : "Auth pending"}
+            {supabaseReady ? "Personal mode" : "Storage offline"}
           </p>
         </div>
       </div>
-      {email ? (
-        <form action="/auth/sign-out" method="post" className="mt-3">
-          <button className="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-[8px] border border-line bg-white px-3 text-sm font-semibold transition hover:border-coral hover:text-coral">
-            <LogOut size={16} />
-            Sign out
-          </button>
-        </form>
-      ) : null}
     </div>
   );
 }
 
 export async function AppShell({ children }: { children: ReactNode }) {
-  const supabaseReady = hasSupabaseConfig();
+  const supabaseReady = hasSupabaseAppConfig();
   const aiReady = hasAiConfig();
   const { user } = await getCurrentUser();
   const userEmail = user?.email ?? null;
@@ -115,7 +107,7 @@ export async function AppShell({ children }: { children: ReactNode }) {
                 <span className="inline-flex items-center gap-2 font-semibold">
                   <KeyRound size={16} /> External services not fully connected.
                 </span>{" "}
-                The UI is ready, but cloud auth/storage and AI calls need environment variables before this can be considered complete.
+                The UI is ready, but Supabase admin storage and AI calls need environment variables before this can be considered complete.
               </div>
             ) : null}
           </div>

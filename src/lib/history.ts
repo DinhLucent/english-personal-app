@@ -55,7 +55,7 @@ async function getHistoryContext() {
   }
 
   if (!user) {
-    return { supabase, user: null, reason: "No authenticated Supabase user." };
+    return { supabase, user: null, reason: "Personal Supabase profile is unavailable." };
   }
 
   return { supabase, user, reason: null };

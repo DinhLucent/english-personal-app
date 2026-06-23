@@ -131,7 +131,7 @@ export default function AssessmentPage() {
               </div>
             </div>
           ) : (
-            <EmptyState title="No assessment yet" description="Run the assessment when DeepSeek is connected. Results will be saved after Supabase is connected." />
+            <EmptyState title="No assessment yet" description="Run the assessment when DeepSeek is connected. Results will be saved to assessment history." />
           )}
         </Panel>
       </div>
@@ -170,7 +170,7 @@ export default function AssessmentPage() {
         ) : (
           <EmptyState
             title="No saved assessments"
-            description={history?.reason ?? "Sign in with Supabase and run an assessment to save results."}
+            description={history?.reason ?? "Run an assessment to save results."}
           />
         )}
       </Panel>

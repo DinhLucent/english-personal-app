@@ -44,7 +44,7 @@ export default async function ProgressPage() {
       <PageHeader
         eyebrow="Progress"
         title="Track learning from real sessions"
-        description="This page is wired for Supabase-backed aggregation. Once connected, the stats will come from lessons, corrections, vocabulary, and conversation sessions."
+        description="Stats are aggregated from lessons, corrections, vocabulary, and conversation sessions in your personal profile."
       />
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {progressStats.map((stat) => (
@@ -79,7 +79,7 @@ export default async function ProgressPage() {
               description={
                 summary.source === "supabase"
                   ? `Total minutes tracked: ${summary.totalMinutes}. Average score: ${summary.averageScore ?? "--"}.`
-                  : "Connect Supabase and complete a lesson to populate the progress chart."
+                  : "Complete a lesson to populate the progress chart."
               }
             />
           </div>

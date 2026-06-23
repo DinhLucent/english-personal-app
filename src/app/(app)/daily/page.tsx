@@ -92,7 +92,7 @@ export default function DailyPage() {
       <PageHeader
         eyebrow="Daily Lesson"
         title="Generate one focused lesson for today"
-        description="The final version will reuse the same lesson for each user/day and save completion to Supabase."
+        description="The same lesson is reused for your personal day and saved with completion progress."
         action={
           <Button
             onClick={generateLesson}
@@ -163,7 +163,7 @@ export default function DailyPage() {
             </div>
             <EmptyState
               title="Waiting for generated lesson"
-              description="Add DEEPSEEK_API_KEY to generate a real lesson. After Supabase is connected, the lesson will be saved per user/day."
+              description="Generate a lesson with DeepSeek. It will be saved to your personal day when storage is available."
             />
           </div>
         </Panel>

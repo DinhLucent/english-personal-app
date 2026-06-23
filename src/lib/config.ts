@@ -11,11 +11,19 @@ export function hasSupabaseConfig() {
   );
 }
 
+export function isPersonalMode() {
+  return process.env.AUTH_MODE !== "supabase";
+}
+
 export function hasSupabaseAdminConfig() {
   return Boolean(
     process.env.NEXT_PUBLIC_SUPABASE_URL &&
       getSupabaseAdminKey(),
   );
+}
+
+export function hasSupabaseAppConfig() {
+  return hasSupabaseConfig() && (!isPersonalMode() || hasSupabaseAdminConfig());
 }
 
 export function getSupabaseAdminKey() {

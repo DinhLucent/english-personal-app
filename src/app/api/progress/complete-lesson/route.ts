@@ -21,8 +21,8 @@ export async function POST(request: Request) {
   const { supabase, user } = await getCurrentUser();
   if (!supabase || !user) {
     return NextResponse.json(
-      fail("not_authenticated", "Connect Supabase and sign in before completing lessons."),
-      { status: 401 },
+      fail("personal_profile_unavailable", "Supabase personal profile is unavailable."),
+      { status: 503 },
     );
   }
 

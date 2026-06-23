@@ -159,7 +159,7 @@ export default function VocabularyPage() {
         ) : (
           <EmptyState
             title="No saved vocabulary"
-            description={history?.reason ?? "Sign in with Supabase and generate vocabulary to save words."}
+            description={history?.reason ?? "Generate vocabulary to save words."}
           />
         )}
       </Panel>

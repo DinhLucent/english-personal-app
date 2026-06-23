@@ -29,7 +29,7 @@ async function getAuthenticatedContext() {
   }
 
   if (!user) {
-    return { supabase, user: null, reason: "No authenticated Supabase user." };
+    return { supabase, user: null, reason: "Personal Supabase profile is unavailable." };
   }
 
   const { error: profileError } = await supabase.from("profiles").upsert({

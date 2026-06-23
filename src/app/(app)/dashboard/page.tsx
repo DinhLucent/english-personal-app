@@ -17,7 +17,7 @@ export default async function DashboardPage() {
       <PageHeader
         eyebrow="Dashboard"
         title="Your English cockpit for today"
-        description="Start with one focused lesson, then reinforce it with correction and conversation practice. Cloud progress will unlock after Supabase is connected."
+        description="Start with one focused lesson, then reinforce it with correction and conversation practice. Progress is saved to your personal Supabase profile."
         action={
           <LinkButton href="/daily" icon={<BookOpenCheck size={18} />}>
             Start Today
@@ -92,7 +92,7 @@ export default async function DashboardPage() {
           <div>
             <h2 className="text-lg font-semibold">Weekly minutes</h2>
             <p className="mt-1 text-sm text-[#66716c]">
-              This chart will use real `lesson_attempts` and `practice_sessions`.
+              This chart uses real `lesson_attempts` and `practice_sessions`.
             </p>
           </div>
           <LinkButton href="/progress" variant="secondary" icon={<ArrowRight size={18} />}>
@@ -115,7 +115,7 @@ export default async function DashboardPage() {
         <div className="mt-5">
           <EmptyState
             title="No sessions completed yet"
-            description="After Supabase is connected, this page will aggregate completed lessons, correction history, and conversation sessions."
+            description="Complete lessons and practice sessions to populate your personal progress."
           />
         </div>
       </Panel>

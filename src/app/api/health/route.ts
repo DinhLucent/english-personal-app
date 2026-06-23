@@ -1,23 +1,18 @@
 import { NextResponse } from "next/server";
 import { getServiceStatuses } from "@/lib/status";
+import { createSupabaseAdminClient } from "@/lib/supabase/server";
 
 async function checkSupabaseNetwork() {
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-    return { ok: false, message: "Supabase env vars are missing." };
+  const supabase = createSupabaseAdminClient();
+  if (!supabase) {
+    return { ok: false, message: "Supabase admin env vars are missing." };
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL.replace(/\/$/, "");
-  const response = await fetch(`${baseUrl}/rest/v1/profiles?select=id&limit=1`, {
-    headers: {
-      apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-      Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
-    },
-    cache: "no-store",
-  });
+  const { error } = await supabase.from("profiles").select("id").limit(1);
 
   return {
-    ok: response.ok,
-    message: `Supabase profiles endpoint returned HTTP ${response.status}.`,
+    ok: !error,
+    message: error ? error.message : "Supabase admin connection succeeded.",
   };
 }
 

@@ -128,7 +128,7 @@ export default function CorrectionPage() {
           ) : (
             <EmptyState
               title="No correction yet"
-              description="Run the agent once. When Supabase is connected, each result will also be stored in correction history."
+              description="Run the agent once. Each result will also be stored in correction history."
             />
           )}
         </Panel>
@@ -169,7 +169,7 @@ export default function CorrectionPage() {
         ) : (
           <EmptyState
             title="No saved corrections"
-            description={history?.reason ?? "Sign in with Supabase and run a correction to populate history."}
+            description={history?.reason ?? "Run a correction to populate history."}
           />
         )}
       </Panel>

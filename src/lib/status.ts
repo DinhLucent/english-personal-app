@@ -2,7 +2,8 @@ import {
   hasCronConfig,
   hasAiConfig,
   hasSupabaseAdminConfig,
-  hasSupabaseConfig,
+  hasSupabaseAppConfig,
+  isPersonalMode,
 } from "@/lib/config";
 
 export type ServiceStatus = {
@@ -15,10 +16,14 @@ export function getServiceStatuses(): ServiceStatus[] {
   return [
     {
       name: "Supabase",
-      configured: hasSupabaseConfig(),
-      detail: hasSupabaseConfig()
-        ? "Environment variables are present."
-        : "NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are missing.",
+      configured: hasSupabaseAppConfig(),
+      detail: hasSupabaseAppConfig()
+        ? isPersonalMode()
+          ? "Public and admin environment variables are present."
+          : "Public environment variables are present."
+        : isPersonalMode()
+          ? "NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, and a Supabase admin key are required."
+          : "NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are missing.",
     },
     {
       name: "DeepSeek",
