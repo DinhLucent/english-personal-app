@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -32,7 +32,7 @@ const navItems = [
   { href: "/status", label: "Status", icon: Activity },
 ];
 
-export function AppNav() {
+export function AppNav({ onNavigate, collapsed = false }: { onNavigate?: () => void; collapsed?: boolean }) {
   const pathname = usePathname();
 
   return (
@@ -45,15 +45,33 @@ export function AppNav() {
           <Link
             key={item.href}
             href={item.href}
+            aria-current={active ? "page" : undefined}
+            data-motion="nav-item"
+            onClick={onNavigate}
             className={cn(
-              "flex min-h-10 items-center gap-3 rounded-[8px] px-3 text-sm font-medium transition-all duration-200 active:scale-[0.98]",
+              "group flex min-h-11 items-center rounded-[8px] text-sm font-semibold transition-all duration-300 active:scale-[0.98]",
+              collapsed ? "justify-center px-0 relative" : "gap-3 px-3",
               active
-                ? "bg-gradient-to-r from-brand to-brand-strong text-white shadow-sm shadow-brand/10"
-                : "text-[#52605a] hover:bg-panel-muted hover:text-foreground hover:translate-x-[2px]",
+                ? "bg-gradient-to-r from-brand to-brand-strong text-white shadow-[0_12px_26px_rgba(20,125,100,0.2)]"
+                : "text-[var(--muted)] hover:bg-white/80 hover:text-foreground hover:shadow-[0_8px_22px_rgba(22,33,29,0.045)]",
+              !active && !collapsed && "hover:translate-x-1",
             )}
           >
-            <Icon aria-hidden="true" size={18} />
-            <span>{item.label}</span>
+            <span
+              className={cn(
+                "flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] transition-colors duration-300",
+                active ? "bg-white/[0.14]" : "bg-transparent text-[var(--muted)] group-hover:bg-panel-muted group-hover:text-brand",
+              )}
+            >
+              <Icon aria-hidden="true" size={18} />
+            </span>
+            {collapsed ? (
+              <span className="absolute left-14 z-50 origin-left scale-95 rounded-[6px] bg-[#1d2420] px-2.5 py-1.5 text-xs font-semibold text-white shadow-md opacity-0 pointer-events-none group-hover:opacity-100 group-hover:scale-100 group-hover:translate-x-2 transition-all duration-200 whitespace-nowrap">
+                {item.label}
+              </span>
+            ) : (
+              <span>{item.label}</span>
+            )}
           </Link>
         );
       })}
@@ -67,15 +85,12 @@ export function MobileNav() {
   const activeItem = navItems.find((item) => item.href === pathname);
   const ActiveIcon = activeItem?.icon ?? Gauge;
 
-  useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
-
   return (
-    <div className="rounded-[8px] border border-line bg-panel p-2 lg:hidden">
+    <div className="rounded-[8px] border border-line/70 bg-white/[0.88] p-2 shadow-[0_10px_30px_rgba(22,33,29,0.055)] backdrop-blur-sm lg:hidden">
       <button
         onClick={() => setOpen(!open)}
-        className="flex w-full cursor-pointer items-center justify-between rounded-[8px] px-3 py-2 text-sm font-semibold text-foreground outline-none"
+        className="flex w-full cursor-pointer items-center justify-between rounded-[8px] px-3 py-2 text-sm font-semibold text-foreground outline-none transition hover:bg-panel-muted"
+        aria-expanded={open}
       >
         <span className="flex items-center gap-3">
           <ActiveIcon size={18} />
@@ -87,8 +102,8 @@ export function MobileNav() {
         />
       </button>
       {open && (
-        <div className="mt-2 border-t border-line pt-2 animate-fadeIn">
-          <AppNav />
+        <div className="mt-2 border-t border-line/70 pt-2 animate-fadeIn">
+          <AppNav onNavigate={() => setOpen(false)} />
         </div>
       )}
     </div>
