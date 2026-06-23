@@ -171,10 +171,13 @@ export default function LoginPage() {
 
         <div className="space-y-3">
           <TextInput
+            id="email"
+            name="email"
             type="email"
             value={email}
             placeholder="you@example.com"
             onChange={(event) => handleEmailChange(event.target.value)}
+            autoComplete="email"
           />
           <Button
             className="w-full"
