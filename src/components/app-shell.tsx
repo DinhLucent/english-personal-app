@@ -15,13 +15,18 @@ function StatusPill({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold",
+        "inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold transition-all duration-300",
         ready
           ? "border-[#b9d8ca] bg-[#e7f4ed] text-brand-strong"
           : "border-[#f0c7bd] bg-[#fff0ed] text-coral",
       )}
     >
-      <span className={cn("h-2 w-2 rounded-full", ready ? "bg-brand" : "bg-coral")} />
+      <span className="relative flex h-2 w-2">
+        {ready && (
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand opacity-75" />
+        )}
+        <span className={cn("relative inline-flex h-2 w-2 rounded-full", ready ? "bg-brand" : "bg-coral")} />
+      </span>
       {label}
     </span>
   );

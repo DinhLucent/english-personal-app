@@ -165,10 +165,10 @@ export default function ConversationPage() {
               messages.map((message, index) => (
                 <div
                   key={`${message.role}-${index}`}
-                  className={`max-w-[86%] rounded-[8px] px-4 py-3 text-sm leading-6 ${
+                  className={`max-w-[86%] rounded-[8px] px-4 py-3 text-sm leading-6 animate-slideUp ${
                     message.role === "user"
-                      ? "ml-auto bg-brand text-white"
-                      : "mr-auto bg-panel-muted text-foreground"
+                      ? "ml-auto bg-gradient-to-r from-brand to-brand-strong text-white shadow-sm"
+                      : "mr-auto bg-panel-muted border border-line/40 text-foreground"
                   }`}
                 >
                   {message.content}

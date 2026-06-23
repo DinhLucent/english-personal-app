@@ -13,10 +13,10 @@ type ButtonLikeProps = {
 };
 
 const buttonVariants = {
-  primary: "border-brand bg-brand text-white hover:bg-brand-strong",
-  secondary: "border-line bg-white text-foreground hover:border-brand hover:text-brand",
-  quiet: "border-transparent bg-transparent text-foreground hover:bg-panel-muted",
-  danger: "border-coral bg-coral text-white hover:bg-[#b84f40]",
+  primary: "border-brand bg-gradient-to-r from-brand to-brand-strong text-white hover:shadow-md hover:shadow-brand/10 hover:brightness-[1.03] active:scale-[0.98]",
+  secondary: "border-line bg-white text-foreground hover:border-brand hover:text-brand hover:shadow-sm active:scale-[0.98]",
+  quiet: "border-transparent bg-transparent text-foreground hover:bg-panel-muted active:scale-[0.98]",
+  danger: "border-coral bg-gradient-to-r from-coral to-[#b84f40] text-white hover:shadow-md hover:shadow-coral/10 hover:brightness-[1.03] active:scale-[0.98]",
 };
 
 export function Button({
@@ -29,7 +29,7 @@ export function Button({
   return (
     <button
       className={cn(
-        "inline-flex min-h-11 items-center justify-center gap-2 rounded-[8px] border px-4 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60",
+        "inline-flex min-h-11 items-center justify-center gap-2 rounded-[8px] border px-4 text-sm font-semibold transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-60 disabled:scale-100",
         buttonVariants[variant],
         className,
       )}
@@ -52,7 +52,7 @@ export function LinkButton({
     <Link
       href={href}
       className={cn(
-        "inline-flex min-h-11 items-center justify-center gap-2 rounded-[8px] border px-4 text-sm font-semibold transition",
+        "inline-flex min-h-11 items-center justify-center gap-2 rounded-[8px] border px-4 text-sm font-semibold transition-all duration-200",
         buttonVariants[variant],
         className,
       )}
@@ -100,7 +100,7 @@ export function Panel({
   className?: string;
 }) {
   return (
-    <section className={cn("rounded-[8px] border border-line bg-panel p-5", className)}>
+    <section className={cn("rounded-[8px] border border-line/60 bg-panel p-5 shadow-[0_4px_20px_0_rgba(0,0,0,0.02)] transition-all duration-300 hover:shadow-[0_8px_30px_0_rgba(0,0,0,0.04)]", className)}>
       {children}
     </section>
   );
@@ -125,11 +125,11 @@ export function StatBlock({
   };
 
   return (
-    <div className="rounded-[8px] border border-line bg-panel p-5">
+    <div className="rounded-[8px] border border-line/60 bg-panel p-5 shadow-[0_4px_20px_0_rgba(0,0,0,0.02)] transition-all duration-300 hover:translate-y-[-2px] hover:shadow-[0_8px_30px_0_rgba(0,0,0,0.04)]">
       <div className={cn("mb-5 h-1.5 w-12 rounded-full", tones[tone])} />
-      <p className="text-sm font-medium text-[#66716c]">{label}</p>
-      <p className="mt-2 text-3xl font-semibold text-foreground">{value}</p>
-      <p className="mt-2 text-sm text-[#66716c]">{detail}</p>
+      <p className="text-xs font-semibold uppercase tracking-wider text-[#66716c]">{label}</p>
+      <p className="mt-2 text-3xl font-bold tracking-tight text-foreground">{value}</p>
+      <p className="mt-2 text-xs text-[#8b9691]">{detail}</p>
     </div>
   );
 }
@@ -152,7 +152,7 @@ export function Textarea(props: ComponentPropsWithoutRef<"textarea">) {
   return (
     <textarea
       className={cn(
-        "min-h-36 w-full resize-y rounded-[8px] border border-line bg-white px-4 py-3 text-sm leading-6 outline-none transition placeholder:text-[#8b9691] focus:border-brand",
+        "min-h-36 w-full resize-y rounded-[8px] border border-line bg-white px-4 py-3 text-sm leading-6 outline-none transition-all placeholder:text-[#8b9691] focus:border-brand focus:ring-4 focus:ring-brand/10 focus:shadow-sm",
         props.className,
       )}
       {...props}
@@ -164,7 +164,7 @@ export function TextInput(props: ComponentPropsWithoutRef<"input">) {
   return (
     <input
       className={cn(
-        "h-11 w-full rounded-[8px] border border-line bg-white px-4 text-sm outline-none transition placeholder:text-[#8b9691] focus:border-brand",
+        "h-11 w-full rounded-[8px] border border-line bg-white px-4 text-sm outline-none transition-all placeholder:text-[#8b9691] focus:border-brand focus:ring-4 focus:ring-brand/10 focus:shadow-sm",
         props.className,
       )}
       {...props}
@@ -176,7 +176,7 @@ export function Select(props: ComponentPropsWithoutRef<"select">) {
   return (
     <select
       className={cn(
-        "h-11 w-full rounded-[8px] border border-line bg-white px-4 text-sm outline-none transition focus:border-brand",
+        "h-11 w-full rounded-[8px] border border-line bg-white px-4 text-sm outline-none transition-all focus:border-brand focus:ring-4 focus:ring-brand/10 focus:shadow-sm",
         props.className,
       )}
       {...props}

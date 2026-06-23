@@ -198,15 +198,15 @@ function LessonView({
         ) : null}
         <div className="mt-6 grid gap-3">
           {lesson.vocabulary.map((item) => (
-            <div key={item.word} className="rounded-[8px] border border-line p-4">
+            <div key={item.word} className="rounded-[8px] border border-line/60 bg-white p-4 shadow-[0_2px_8px_rgba(0,0,0,0.01)] transition-all duration-300 hover:border-brand hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:translate-y-[-1px]">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <p className="font-semibold">{item.word}</p>
-                <span className="rounded-full bg-panel-muted px-3 py-1 text-xs font-semibold text-brand">
+                <span className="rounded-full bg-panel-muted px-3 py-1 text-xs font-semibold text-brand-strong">
                   {item.topic}
                 </span>
               </div>
               <p className="mt-2 text-sm text-[#66716c]">{item.meaningVi}</p>
-              <p className="mt-2 text-sm">{item.example}</p>
+              <p className="mt-2 text-sm font-medium">{item.example}</p>
             </div>
           ))}
         </div>

@@ -109,11 +109,11 @@ export default function VocabularyPage() {
             <h2 className="text-lg font-semibold">{batch.topic}</h2>
             <div className="mt-5 grid gap-3 md:grid-cols-2">
               {batch.items.map((item) => (
-                <div key={item.word} className="rounded-[8px] border border-line p-4">
+                <div key={item.word} className="rounded-[8px] border border-line/60 bg-white p-4 shadow-[0_2px_8px_rgba(0,0,0,0.01)] transition-all duration-300 hover:border-brand hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:translate-y-[-1px]">
                   <p className="font-semibold">{item.word}</p>
                   <p className="mt-1 text-sm text-[#66716c]">{item.meaningVi}</p>
-                  <p className="mt-3 text-sm">{item.example}</p>
-                  <p className="mt-3 text-sm text-[#66716c]">{item.usageNoteVi}</p>
+                  <p className="mt-3 text-sm font-medium">{item.example}</p>
+                  <p className="mt-3 text-xs leading-5 text-[#8b9691] border-t border-line/30 pt-2">{item.usageNoteVi}</p>
                 </div>
               ))}
             </div>
@@ -140,16 +140,16 @@ export default function VocabularyPage() {
         {history?.items.length ? (
           <div className="grid gap-3 md:grid-cols-2">
             {history.items.map((item) => (
-              <div key={item.id} className="rounded-[8px] border border-line p-4">
+              <div key={item.id} className="rounded-[8px] border border-line/60 bg-white p-4 shadow-[0_2px_8px_rgba(0,0,0,0.01)] transition-all duration-300 hover:border-brand hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:translate-y-[-1px]">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className="font-semibold">{item.word}</p>
-                  <span className="rounded-full bg-panel-muted px-3 py-1 text-xs font-semibold text-brand">
+                  <span className="rounded-full bg-panel-muted px-3 py-1 text-xs font-semibold text-brand-strong">
                     {item.topic ?? "General"}
                   </span>
                 </div>
                 <p className="mt-2 text-sm text-[#66716c]">{item.meaningVi}</p>
-                <p className="mt-3 text-sm">{item.example}</p>
-                <p className="mt-3 text-xs text-[#66716c]">
+                <p className="mt-3 text-sm font-medium">{item.example}</p>
+                <p className="mt-3 text-xs text-[#8b9691] border-t border-line/30 pt-2">
                   Reviews: {item.reviewCount} · Next:{" "}
                   {item.nextReviewAt ? new Date(item.nextReviewAt).toLocaleDateString() : "--"}
                 </p>

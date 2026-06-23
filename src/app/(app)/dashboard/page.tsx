@@ -26,18 +26,26 @@ export default async function DashboardPage() {
       />
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        {dashboardStats.map((stat) => (
-          <StatBlock
+        {dashboardStats.map((stat, idx) => (
+          <div
             key={stat.label}
-            label={stat.label}
-            value={stat.value}
-            detail={stat.detail}
-            tone={stat.tone as "brand" | "coral" | "amber" | "violet"}
-          />
+            style={{ animationDelay: `${idx * 60}ms`, animationFillMode: "forwards" }}
+            className="animate-slideUp opacity-0"
+          >
+            <StatBlock
+              label={stat.label}
+              value={stat.value}
+              detail={stat.detail}
+              tone={stat.tone as "brand" | "coral" | "amber" | "violet"}
+            />
+          </div>
         ))}
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
+      <div
+        style={{ animationDelay: "240ms", animationFillMode: "forwards" }}
+        className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr] animate-slideUp opacity-0"
+      >
         <Panel>
           <div className="flex items-center justify-between gap-4">
             <div>
@@ -53,7 +61,7 @@ export default async function DashboardPage() {
               <a
                 key={task.href}
                 href={task.href}
-                className="rounded-[8px] border border-line bg-white p-4 transition hover:border-brand"
+                className="rounded-[8px] border border-line/60 bg-white p-4 shadow-[0_2px_8px_rgba(0,0,0,0.01)] transition-all duration-300 hover:border-brand hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:translate-y-[-1px] active:scale-[0.99]"
               >
                 <p className="font-semibold">{task.title}</p>
                 <p className="mt-1 text-sm leading-6 text-[#66716c]">{task.detail}</p>
@@ -74,7 +82,7 @@ export default async function DashboardPage() {
               const Icon = item.icon;
               return (
                 <a
-                  className="flex items-center gap-3 rounded-[8px] border border-line px-4 py-3 text-sm font-semibold transition hover:border-brand"
+                  className="flex items-center gap-3 rounded-[8px] border border-line/60 bg-white px-4 py-3 text-sm font-semibold shadow-[0_2px_8px_rgba(0,0,0,0.01)] transition-all duration-300 hover:border-brand hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:translate-y-[-1px] active:scale-[0.99]"
                   href={item.href}
                   key={item.href}
                 >
@@ -87,38 +95,47 @@ export default async function DashboardPage() {
         </Panel>
       </div>
 
-      <Panel>
-        <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-          <div>
-            <h2 className="text-lg font-semibold">Weekly minutes</h2>
-            <p className="mt-1 text-sm text-[#66716c]">
-              This chart uses real `lesson_attempts` and `practice_sessions`.
-            </p>
-          </div>
-          <LinkButton href="/progress" variant="secondary" icon={<ArrowRight size={18} />}>
-            View Progress
-          </LinkButton>
-        </div>
-          <div className="mt-6 grid grid-cols-7 items-end gap-2">
-          {summary.weeklyMinutes.map((item) => (
-            <div key={item.day} className="grid gap-2 text-center">
-              <div className="flex h-32 items-end rounded-[8px] bg-panel-muted p-1">
-                <div
-                  className="w-full rounded-[6px] bg-brand"
-                  style={{ height: `${Math.max(item.minutes * 2, 6)}px` }}
-                />
-              </div>
-              <span className="text-xs font-semibold text-[#66716c]">{item.day}</span>
+      <div
+        style={{ animationDelay: "360ms", animationFillMode: "forwards" }}
+        className="animate-slideUp opacity-0"
+      >
+        <Panel>
+          <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+            <div>
+              <h2 className="text-lg font-semibold">Weekly minutes</h2>
+              <p className="mt-1 text-sm text-[#66716c]">
+                This chart uses real `lesson_attempts` and `practice_sessions`.
+              </p>
             </div>
-          ))}
-        </div>
-        <div className="mt-5">
-          <EmptyState
-            title="No sessions completed yet"
-            description="Complete lessons and practice sessions to populate your personal progress."
-          />
-        </div>
-      </Panel>
+            <LinkButton href="/progress" variant="secondary" icon={<ArrowRight size={18} />}>
+              View Progress
+            </LinkButton>
+          </div>
+          <div className="mt-6 grid grid-cols-7 items-end gap-2">
+            {summary.weeklyMinutes.map((item, idx) => (
+              <div key={item.day} className="grid gap-2 text-center">
+                <div className="flex h-32 items-end rounded-[8px] bg-panel-muted p-1">
+                  <div
+                    className="w-full rounded-[6px] bg-brand animate-growUp"
+                    style={{
+                      height: `${Math.max(item.minutes * 2, 6)}px`,
+                      animationDelay: `${idx * 50 + 400}ms`,
+                      animationFillMode: "both"
+                    }}
+                  />
+                </div>
+                <span className="text-xs font-semibold text-[#66716c]">{item.day}</span>
+              </div>
+            ))}
+          </div>
+          <div className="mt-5">
+            <EmptyState
+              title="No sessions completed yet"
+              description="Complete lessons and practice sessions to populate your personal progress."
+            />
+          </div>
+        </Panel>
+      </div>
     </div>
   );
 }

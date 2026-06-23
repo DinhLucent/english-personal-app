@@ -1,11 +1,13 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   BarChart3,
   Activity,
   BookOpenCheck,
+  ChevronDown,
   Gauge,
   Home,
   MessageSquare,
@@ -44,10 +46,10 @@ export function AppNav() {
             key={item.href}
             href={item.href}
             className={cn(
-              "flex min-h-10 items-center gap-3 rounded-[8px] px-3 text-sm font-medium transition",
+              "flex min-h-10 items-center gap-3 rounded-[8px] px-3 text-sm font-medium transition-all duration-200 active:scale-[0.98]",
               active
-                ? "bg-brand text-white"
-                : "text-[#52605a] hover:bg-panel-muted hover:text-foreground",
+                ? "bg-gradient-to-r from-brand to-brand-strong text-white shadow-sm shadow-brand/10"
+                : "text-[#52605a] hover:bg-panel-muted hover:text-foreground hover:translate-x-[2px]",
             )}
           >
             <Icon aria-hidden="true" size={18} />
@@ -61,18 +63,34 @@ export function AppNav() {
 
 export function MobileNav() {
   const pathname = usePathname();
+  const [open, setOpen] = useState(false);
   const activeItem = navItems.find((item) => item.href === pathname);
   const ActiveIcon = activeItem?.icon ?? Gauge;
 
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
   return (
-    <details className="rounded-[8px] border border-line bg-panel p-2 lg:hidden">
-      <summary className="flex cursor-pointer list-none items-center gap-3 rounded-[8px] px-3 py-2 text-sm font-semibold">
-        <ActiveIcon size={18} />
-        {activeItem?.label ?? "Navigate"}
-      </summary>
-      <div className="mt-2 border-t border-line pt-2">
-        <AppNav />
-      </div>
-    </details>
+    <div className="rounded-[8px] border border-line bg-panel p-2 lg:hidden">
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex w-full cursor-pointer items-center justify-between rounded-[8px] px-3 py-2 text-sm font-semibold text-foreground outline-none"
+      >
+        <span className="flex items-center gap-3">
+          <ActiveIcon size={18} />
+          {activeItem?.label ?? "Navigate"}
+        </span>
+        <ChevronDown
+          size={16}
+          className={cn("text-[#66716c] transition-transform duration-200", open && "rotate-180")}
+        />
+      </button>
+      {open && (
+        <div className="mt-2 border-t border-line pt-2 animate-fadeIn">
+          <AppNav />
+        </div>
+      )}
+    </div>
   );
 }
