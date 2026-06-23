@@ -29,6 +29,44 @@ function formatCooldown(ms: number) {
   return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function getStringValue(source: Record<string, unknown>, key: string) {
+  const value = source[key];
+  return typeof value === "string" && value.trim() ? value.trim() : null;
+}
+
+function getAuthErrorMessage(err: unknown) {
+  if (typeof err === "string" && err.trim()) {
+    return err.trim();
+  }
+
+  if (err instanceof Error && err.message && err.message !== "{}") {
+    if (isRecord(err)) {
+      const code = getStringValue(err, "code") ?? getStringValue(err, "error_code");
+      return code ? `${code}: ${err.message}` : err.message;
+    }
+
+    return err.message;
+  }
+
+  if (isRecord(err)) {
+    const code = getStringValue(err, "code") ?? getStringValue(err, "error_code");
+    const message =
+      getStringValue(err, "message") ??
+      getStringValue(err, "error_description") ??
+      getStringValue(err, "error");
+
+    if (message && message !== "{}") {
+      return code ? `${code}: ${message}` : message;
+    }
+  }
+
+  return "Could not start sign in. Check Supabase Auth and SMTP configuration, then try again.";
+}
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState<string | null>(null);
@@ -97,12 +135,19 @@ export default function LoginPage() {
       startCooldown(RESEND_COOLDOWN_MS);
       setMessage("Magic link sent. Check your inbox and spam folder.");
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Could not start sign in.";
-      const isRateLimit = /rate limit|too many|429/i.test(message);
+      const message = getAuthErrorMessage(err);
+      const isRateLimit = /rate limit|too many|429|over_email_send_rate_limit/i.test(message);
+      const isEmailSendFailure = /error sending confirmation email|unexpected_failure|smtp/i.test(
+        message,
+      );
 
       if (isRateLimit) {
         startCooldown(RATE_LIMIT_COOLDOWN_MS);
         setError("Too many magic link requests. Wait a few minutes, then try again.");
+      } else if (isEmailSendFailure) {
+        setError(
+          "Supabase could not send the magic link email. Check SMTP host and credentials, then try again.",
+        );
       } else {
         setError(message);
       }
