@@ -5,6 +5,7 @@ import { Loader2, MessageSquare, RefreshCw, Square } from "lucide-react";
 import { Button, EmptyState, PageHeader, Panel, Select, TextInput } from "@/components/ui";
 import { getJson, postJson } from "@/lib/client-api";
 import type { ConversationReply, ConversationSummary } from "@/lib/ai/schemas";
+import { fireConfetti } from "@/lib/confetti";
 import type { HistoryEnvelope, SessionHistoryItem } from "@/lib/history";
 
 type Message = {
@@ -104,6 +105,9 @@ export default function ConversationPage() {
       });
       setSummary(response.data);
       await loadHistory();
+      localStorage.setItem("speakflow:conversation-completed", "true");
+      window.dispatchEvent(new Event("speakflow:progress-update"));
+      fireConfetti();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not summarize.");
     } finally {

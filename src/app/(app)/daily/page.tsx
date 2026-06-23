@@ -14,6 +14,7 @@ import {
 import { postJson } from "@/lib/client-api";
 import { sampleDailyLesson } from "@/lib/demo-data";
 import type { DailyLesson } from "@/lib/ai/schemas";
+import { fireConfetti } from "@/lib/confetti";
 
 export default function DailyPage() {
   const [jobRole, setJobRole] = useState("software developer");
@@ -78,6 +79,9 @@ export default function DailyPage() {
       }
 
       setCompleteMessage("Lesson completed and progress updated.");
+      localStorage.setItem("speakflow:daily-completed", "true");
+      window.dispatchEvent(new Event("speakflow:progress-update"));
+      fireConfetti();
     } catch (err) {
       setCompleteMessage(err instanceof Error ? err.message : "Could not complete lesson.");
     } finally {

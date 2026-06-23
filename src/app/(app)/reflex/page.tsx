@@ -5,6 +5,7 @@ import { Loader2, Repeat2 } from "lucide-react";
 import { Button, EmptyState, FieldLabel, PageHeader, Panel, TextInput } from "@/components/ui";
 import { postJson } from "@/lib/client-api";
 import type { ReflexFeedback, ReflexSession } from "@/lib/ai/schemas";
+import { fireConfetti } from "@/lib/confetti";
 
 export default function ReflexPage() {
   const [topic, setTopic] = useState("work and daily life");
@@ -91,6 +92,9 @@ export default function ReflexPage() {
       }
 
       setSaveMessage("Reflex session saved to Supabase.");
+      localStorage.setItem("speakflow:reflex-completed", "true");
+      window.dispatchEvent(new Event("speakflow:progress-update"));
+      fireConfetti();
     } catch (err) {
       setSaveMessage(err instanceof Error ? err.message : "Could not save reflex session.");
     }
@@ -122,9 +126,19 @@ export default function ReflexPage() {
               <p className="text-sm font-semibold text-brand">Question {index + 1} of {questions.length}</p>
               <h2 className="mt-3 text-2xl font-semibold">{questions[index]}</h2>
               <div className="mt-5 flex gap-3">
-                <TextInput value={answer} onChange={(event) => setAnswer(event.target.value)} placeholder="Answer fast..." />
+                <TextInput
+                  value={answer}
+                  onChange={(event) => setAnswer(event.target.value)}
+                  placeholder="Answer fast..."
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" && !loading && answer.trim()) {
+                      void submitAnswer();
+                    }
+                  }}
+                />
                 <Button onClick={submitAnswer} disabled={loading || answer.trim().length < 1}>Check</Button>
               </div>
+              <p className="mt-2 text-xs text-[#8b9691]">💡 Press Enter to check answer quickly</p>
               <p className="mt-3 text-sm text-[#66716c]">
                 Answered {scores.length} of {questions.length}
               </p>
