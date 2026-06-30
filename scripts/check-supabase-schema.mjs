@@ -12,8 +12,13 @@ const requiredTables = [
   "corrections",
   "assessments",
   "ai_requests",
+  "missions",
+  "mission_attempts",
+  "speaking_attempts",
+  "review_items",
 ];
 const supabaseAdminKey = env.SUPABASE_SECRET_KEY || env.SUPABASE_SERVICE_ROLE_KEY;
+const schemaCheckKey = supabaseAdminKey || env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 function fail(message) {
   console.log(`FAIL ${message}`);
@@ -29,8 +34,8 @@ if (!env.NEXT_PUBLIC_SUPABASE_URL || !env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     try {
       const response = await fetch(`${baseUrl}/rest/v1/${table}?select=*&limit=1`, {
         headers: {
-          apikey: env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
+          apikey: schemaCheckKey,
+          Authorization: `Bearer ${schemaCheckKey}`,
         },
       });
 

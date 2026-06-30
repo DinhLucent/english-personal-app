@@ -9,10 +9,14 @@
     "lint": "eslint",
     "check:env": "node scripts/check-env.mjs",
     "check:env:network": "node scripts/check-env.mjs --network",
+    "check:speaking-curriculum": "node scripts/check-speaking-curriculum.mjs",
     "check:supabase:schema": "node scripts/check-supabase-schema.mjs",
     "smoke:local": "node scripts/smoke-local.mjs",
     "smoke:ai": "node scripts/smoke-ai.mjs",
-    "verify:local": "npm run lint && npm run build && npm audit --omit=dev && npm run smoke:local"
+    "verify:local": "npm run lint && npm run build && npm run check:speaking-curriculum && npm audit --omit=dev && npm run smoke:local",
+    "visual:qa": "node scripts/visual-qa.mjs",
+    "accessibility:smoke": "node scripts/accessibility-smoke.mjs",
+    "interaction:qa": "node scripts/interaction-qa.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.0",

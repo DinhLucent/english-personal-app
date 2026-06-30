@@ -1,7 +1,27 @@
 "use client";
 
-export function fireConfetti() {
+import { playSoundCue, type SoundCue } from "@/lib/sound";
+
+type ConfettiOptions = {
+  particleCount?: number;
+  durationMs?: number;
+  soundCue?: SoundCue | false;
+};
+
+export function fireConfetti({
+  particleCount = 100,
+  durationMs = 3000,
+  soundCue = "complete",
+}: ConfettiOptions = {}) {
   if (typeof window === "undefined") return;
+
+  if (soundCue) {
+    void playSoundCue(soundCue);
+  }
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    return;
+  }
 
   const canvas = document.createElement("canvas");
   canvas.style.position = "fixed";
@@ -38,7 +58,7 @@ export function fireConfetti() {
   }> = [];
 
   // Create particles
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < particleCount; i++) {
     particles.push({
       x: Math.random() * width,
       y: Math.random() * -100 - 20,
@@ -74,8 +94,8 @@ export function fireConfetti() {
       }
     }
 
-    // Run for 3 seconds max
-    if (active && Date.now() - startTime < 3000) {
+    // Run for the configured short completion window.
+    if (active && Date.now() - startTime < durationMs) {
       requestAnimationFrame(animate);
     } else {
       window.removeEventListener("resize", handleResize);

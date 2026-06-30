@@ -109,6 +109,171 @@ export const assessmentSchema = z.object({
   ),
 });
 
+export const speakingScoreSchema = z.object({
+  taskCompletion: z.number().min(0).max(5),
+  fluency: z.number().min(0).max(5),
+  accuracy: z.number().min(0).max(5),
+  vocabulary: z.number().min(0).max(5),
+  interaction: z.number().min(0).max(5),
+});
+
+export const speakingInputModeSchema = z.enum(["typed", "voice"]);
+
+export const speakingVoiceMetricsSchema = z.object({
+  recordingMs: z.number().int().min(0).max(600000).nullable().optional(),
+  wordCount: z.number().int().min(0).max(2000),
+  wordsPerMinute: z.number().min(0).max(400).nullable().optional(),
+  transcriptEdited: z.boolean().default(false),
+  attemptLengthSignal: z.enum(["too_short", "focused", "long"]),
+});
+
+export const speakingDeliverySignalsSchema = z
+  .object({
+    inputMode: speakingInputModeSchema.default("typed"),
+    lengthSignal: z.string(),
+    paceSignal: z.string(),
+    transcriptSignal: z.string(),
+    nextVoiceAction: z.string(),
+  })
+  .default({
+    inputMode: "typed",
+    lengthSignal: "No voice delivery signal was provided.",
+    paceSignal: "Pace was not measured for this answer.",
+    transcriptSignal: "Typed fallback or transcript editing was used.",
+    nextVoiceAction: "Practice the retry out loud, then submit the edited transcript.",
+  });
+
+const reviewCandidateTypeMap: Record<string, "error" | "chunk" | "vocabulary" | "answer"> = {
+  answer: "answer",
+  betteranswer: "answer",
+  chunk: "chunk",
+  correction: "error",
+  error: "error",
+  expression: "chunk",
+  grammar: "error",
+  mistake: "error",
+  mistakes: "error",
+  modelanswer: "answer",
+  naturalanswer: "answer",
+  pattern: "chunk",
+  phrase: "chunk",
+  sampleanswer: "answer",
+  sentence: "answer",
+  sentencepattern: "chunk",
+  usefulchunk: "chunk",
+  vocab: "vocabulary",
+  vocabulary: "vocabulary",
+  word: "vocabulary",
+};
+
+function firstString(values: unknown[]) {
+  for (const value of values) {
+    if (typeof value === "string" && value.trim()) {
+      return value.trim();
+    }
+  }
+
+  return undefined;
+}
+
+function normalizeReviewCandidate(candidate: unknown) {
+  if (!candidate || typeof candidate !== "object" || Array.isArray(candidate)) {
+    return candidate;
+  }
+
+  const record = candidate as Record<string, unknown>;
+  const rawType = firstString([
+    record.type,
+    record.sourceType,
+    record.kind,
+    record.category,
+  ]);
+  const typeKey = rawType?.toLowerCase().replace(/[^a-z]/g, "") ?? "";
+
+  return {
+    ...record,
+    type: reviewCandidateTypeMap[typeKey] ?? rawType,
+    content: firstString([
+      record.content,
+      record.text,
+      record.error,
+      record.mistake,
+      record.chunk,
+      record.phrase,
+      record.word,
+      record.answer,
+      record.modelAnswer,
+      record.betterAnswer,
+      record.naturalAnswer,
+      record.correctForm,
+      record.fix,
+    ]),
+    meaningVi: firstString([
+      record.meaningVi,
+      record.meaning,
+      record.translationVi,
+      record.explanationVi,
+    ]),
+    errorPattern: firstString([
+      record.errorPattern,
+      record.pattern,
+      record.error,
+      record.mistake,
+      record.original,
+    ]),
+    correctForm: firstString([
+      record.correctForm,
+      record.fix,
+      record.corrected,
+      record.natural,
+      record.naturalAnswer,
+    ]),
+  };
+}
+
+export const speakingReviewCandidateSchema = z.preprocess(
+  normalizeReviewCandidate,
+  z.object({
+    type: z.enum(["error", "chunk", "vocabulary", "answer"]),
+    content: z.string(),
+    meaningVi: z.string().optional(),
+    example: z.string().optional(),
+    errorPattern: z.string().optional(),
+    correctForm: z.string().optional(),
+  }),
+);
+
+export const speakingRoleplayReplySchema = z.object({
+  reply: z.string(),
+  nextQuestion: z.string(),
+  expectedFocus: z.string(),
+  suggestedChunks: z.array(z.string()).max(4),
+});
+
+export const speakingFeedbackSchema = z.object({
+  scores: speakingScoreSchema,
+  mainIssue: z.string(),
+  evidence: z.array(z.string()).min(1).max(5),
+  betterAnswer: z.string(),
+  deliverySignals: speakingDeliverySignalsSchema,
+  retryTask: z.object({
+    prompt: z.string(),
+    requiredChunks: z.array(z.string()).min(1).max(4),
+    successCriteria: z.array(z.string()).min(1).max(5),
+  }),
+  reviewCandidates: z.array(speakingReviewCandidateSchema).max(8),
+});
+
+export const speakingRetryFeedbackSchema = z.object({
+  improved: z.boolean(),
+  comparisonVi: z.string(),
+  scores: speakingScoreSchema,
+  remainingIssue: z.string(),
+  nextAction: z.string(),
+  deliverySignals: speakingDeliverySignalsSchema,
+  reviewCandidates: z.array(speakingReviewCandidateSchema).max(8),
+});
+
 export type DailyLesson = z.infer<typeof dailyLessonSchema>;
 export type CorrectionResult = z.infer<typeof correctionSchema>;
 export type ConversationReply = z.infer<typeof conversationReplySchema>;
@@ -118,3 +283,15 @@ export type GrammarLesson = z.infer<typeof grammarLessonSchema>;
 export type ReflexSession = z.infer<typeof reflexSessionSchema>;
 export type ReflexFeedback = z.infer<typeof reflexFeedbackSchema>;
 export type AssessmentResult = z.infer<typeof assessmentSchema>;
+export type SpeakingScores = z.infer<typeof speakingScoreSchema>;
+export type SpeakingInputMode = z.infer<typeof speakingInputModeSchema>;
+export type SpeakingVoiceMetrics = z.infer<typeof speakingVoiceMetricsSchema>;
+export type SpeakingDeliverySignals = z.infer<
+  typeof speakingDeliverySignalsSchema
+>;
+export type SpeakingReviewCandidate = z.infer<
+  typeof speakingReviewCandidateSchema
+>;
+export type SpeakingRoleplayReply = z.infer<typeof speakingRoleplayReplySchema>;
+export type SpeakingFeedback = z.infer<typeof speakingFeedbackSchema>;
+export type SpeakingRetryFeedback = z.infer<typeof speakingRetryFeedbackSchema>;

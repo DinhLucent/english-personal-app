@@ -1,10 +1,15 @@
 # SpeakFlow AI
 
-Personal AI English coach built with Next.js, Supabase, and DeepSeek.
+Workplace Speaking Coach for Vietnamese learners, built with Next.js, Supabase, and DeepSeek.
 
 ## Current scope
 
 - Dashboard
+- 30-day workplace speaking mission path
+- Speaking Studio with Prepare, Drill, Roleplay, Feedback, Retry, and Review
+- Voice MVP with transcript editing and text-to-speech for better answers
+- Browser-first Voice Coach delivery signals without audio storage
+- Review queue for errors, chunks, vocabulary, and better answers
 - Daily lesson generator
 - Correction agent
 - Conversation agent
@@ -12,7 +17,7 @@ Personal AI English coach built with Next.js, Supabase, and DeepSeek.
 - Grammar agent
 - Reflex training
 - Assessment agent
-- Progress page
+- Rubric-based progress page with adaptive next-mission recommendation
 - Supabase personal-mode storage with RLS-safe server access
 - DeepSeek server-only API gateway with Zod validation
 
@@ -45,7 +50,7 @@ DAILY_LESSON_MAX_USERS=25
 ## Supabase setup
 
 1. Create a Supabase project.
-2. Run `supabase/migrations/202606220001_initial_schema.sql` in the SQL editor or Supabase CLI.
+2. Run every SQL file in `supabase/migrations/` in filename order.
 3. Copy the project URL, anon key, and secret/admin key into `.env.local`.
 4. Keep `AUTH_MODE=personal` for a single-user app. The app will use the first profile row unless `PERSONAL_USER_ID` is set.
 
@@ -57,6 +62,7 @@ npm run lint
 npm run build
 npm run check:env
 npm run check:env:network
+npm run check:speaking-curriculum
 npm run check:supabase:schema
 npm run verify:local
 npm run smoke:ai
@@ -64,6 +70,8 @@ npm run smoke:ai
 
 `check:env` verifies required local variables. `check:env:network` also calls Supabase and DeepSeek endpoints, so run it only after keys are filled.
 `check:supabase:schema` verifies the migration tables are visible through Supabase REST.
+`check:speaking-curriculum` verifies the 30-day mission path and migration seed coverage.
+`smoke:local` expects the app to be running, usually at `http://localhost:3001` or the `LOCAL_APP_URL` you set.
 
 ## Vercel deployment
 
@@ -91,4 +99,7 @@ DAILY_LESSON_MAX_USERS
 
 - `docs/MASTER_PLAN.md`
 - `docs/CODEX_BUILD_TASKS.md`
+- `docs/SPEAKING_COACH_REVAMP_PLAN.md`
+- `docs/VOICE_COACH_PHASE.md`
+- `docs/REVAMP_QA.md`
 - `docs/architecture/ADR-001-core-architecture.md`

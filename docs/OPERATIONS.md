@@ -6,17 +6,21 @@
 npm install
 npm run check:env
 npm run check:env:network
+npm run check:speaking-curriculum
 npm run check:supabase:schema
 npm run lint
 npm run build
-npm run verify:local
-npm run dev
+npm run dev -- -p 3001
+LOCAL_APP_URL=http://localhost:3001 npm run smoke:local
+npm run smoke:ai
 ```
+
+`smoke:local` checks public app routes, API guards, Speaking Studio, Review, health, history, and cron protection. Keep a local app server running before calling it.
 
 ## Supabase checklist
 
 1. Create a Supabase project.
-2. Run `supabase/migrations/202606220001_initial_schema.sql`.
+2. Run every SQL file in `supabase/migrations/` in filename order.
 3. Enable email magic link auth.
 4. Add redirect URLs:
    - `http://localhost:3000/auth/callback`
@@ -49,11 +53,11 @@ The default Supabase email sender is only for testing and can return `email rate
 4. Run Vercel production build.
 5. Run a production smoke test:
    - Login.
-   - Generate daily lesson.
-   - Complete lesson.
-   - Run correction.
-   - Run conversation summary.
-   - Confirm progress updates.
+   - Open Dashboard and confirm Today's Mission appears.
+   - Open Speaking Studio and complete Prepare, Roleplay, Feedback, Retry, and Review.
+   - Confirm review items appear on `/review`.
+   - Run correction and conversation summary.
+   - Confirm rubric progress and adaptive mission recommendation update.
 6. Confirm Vercel Cron `/api/cron/daily-lessons` is listed and protected by `CRON_SECRET`.
 
 ## Completion criteria
@@ -62,7 +66,9 @@ The app is complete only when:
 
 - Local lint/build pass.
 - Supabase migration has run.
+- `npm run check:speaking-curriculum` passes.
+- `npm run smoke:local` passes against a running app.
 - `npm run check:env:network` passes.
 - DeepSeek agents return real structured output.
-- Supabase stores lesson, correction, vocabulary, assessment, conversation, and progress data.
+- Supabase stores missions, mission attempts, speaking attempts, review items, lesson, correction, vocabulary, assessment, conversation, and progress data.
 - Vercel deployment works with production env vars.

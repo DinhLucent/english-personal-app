@@ -1,4 +1,9 @@
 const baseUrl = process.env.LOCAL_APP_URL || "http://localhost:3001";
+const persistenceCases = new Set([
+  "speaking-roleplay",
+  "speaking-feedback",
+  "speaking-retry-feedback",
+]);
 
 const cases = [
   [
@@ -67,6 +72,38 @@ const cases = [
       writingSample: "Yesterday I fixed a login bug and tested it carefully.",
     },
   ],
+  [
+    "speaking-roleplay",
+    "/api/ai/speaking",
+    {
+      mode: "roleplay",
+      missionId: "workplace-day-01-introduce-yourself",
+      messages: [],
+    },
+  ],
+  [
+    "speaking-feedback",
+    "/api/ai/speaking",
+    {
+      mode: "feedback",
+      missionId: "workplace-day-01-introduce-yourself",
+      prompt: "Introduce yourself to a new teammate.",
+      userAnswer:
+        "Hi, I am Minh. I mainly work on backend features, and right now I am focusing on fixing login issues.",
+      roleplayMessages: [],
+    },
+  ],
+  [
+    "speaking-retry-feedback",
+    "/api/ai/speaking",
+    {
+      mode: "retry-feedback",
+      missionId: "workplace-day-01-introduce-yourself",
+      originalAnswer: "I am Minh. I work backend.",
+      retryAnswer:
+        "Hi, I am Minh. I mainly work on backend features, and I am responsible for improving the login flow this week.",
+    },
+  ],
 ];
 
 let hasFailure = false;
@@ -80,12 +117,14 @@ for (const [name, path, body] of cases) {
       body: JSON.stringify(body),
     });
     const json = await response.json().catch(() => null);
-    const ok = response.ok && json?.ok === true;
+    const persistenceOk =
+      !persistenceCases.has(name) || json?.data?.persistence?.saved === true;
+    const ok = response.ok && json?.ok === true && persistenceOk;
     const model = json?.data?.meta?.model ? ` ${json.data.meta.model}` : "";
     console.log(`${ok ? "OK" : "FAIL"} ${name} HTTP ${response.status}${model} ${Date.now() - startedAt}ms`);
     if (!ok) {
       hasFailure = true;
-      console.log(JSON.stringify(json?.error ?? json, null, 2));
+      console.log(JSON.stringify(json?.error ?? json?.data?.persistence ?? json, null, 2));
       break;
     }
   } catch (error) {
